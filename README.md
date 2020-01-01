@@ -1,20 +1,3 @@
-# Usage
-
-All the details below have been bundled into one class that lets you specify the action you want to take and the scheme you want to use.
-
-```
-load './app.rb'
-Crypt.encrypt(:vigenere, 'erudite', 'rise')
-=> "njczrlm"
-Crypt.decrypt(:vigenere, 'njczrlm')
-[17, 8, 18, 4] erudite
-
-Crypt.encrypt(:porta, 'erudite', 'rise')
-=> "zalsqcn"
-Crypt.decrypt(:porta, 'zalsqcn')
-[17, 9, 19, 5] erudite
-```
-
 # The Coin
 
 This repository is to break the encryption of the message:
@@ -27,7 +10,7 @@ Vm gp vdqvzh ljjmuwaxc yfw lipxbh li qc zrukvauo xikhxoljkhuhk, du zzzyc li vgvv
 
 The first attempt was a simple rot encryption, then a Vigenère.
 
-```
+```ruby
 load './vigenere.rb'
 client = Vigenere.new('erudite')
 encrypted = client.encrypt([13, 2, 22, 4]) #=> "rpyzvri"
@@ -39,7 +22,7 @@ decrypted = client.decrypt([13, 2, 22, 4])
 
 The `breaker.rb` is an attempt to use the Vigenère Scheme to brute force the message. It's configured to accept whatever scheme you like. However, I suspect it may only work correctly with Vigenère. Iterating over all the permuations within four letters, we collect every possible deciphered text and compare it to a dictionary of words. If there is a small set of words that match, we list them as possible keys used for the enciphered text.
 
-```
+```ruby
 load './vigenere.rb'
 load './breaker.rb'
 client = Vigenere.new('njczrlm')
@@ -71,7 +54,7 @@ Here we were able to break the cipher without knowing the keyword. The breaker t
 
 I was then informed that the cipher used was a Porta Filter. Here's the usage:
 
-```
+```ruby
 load './porta.rb'
 message = 'defendtheeastwallofthecastle'
 scheme = Porta.new('defendtheeastwallofthecastle')
@@ -85,7 +68,7 @@ scheme.decrypt('fortification')
 
 Using this, we'll try breaking the message
 
-```
+```ruby
 load './porta.rb'
 message = "Vm gp vdqvzh ljjmuwaxc yfw lipxbh li qc zrukvauo xikhxoljkhuhk du zzzyc li vgvvdjjx dsz wuqvboi kopjttdtgh"
 scheme = Porta.new(message)
@@ -95,7 +78,7 @@ scheme.decrypt('love')
 
 This isn't right. It could be due to the key we're providing. Let's adapt breaker to make use of the `Porta` scheme. Making the Porta scheme accept an array of characters instead of a word. Let's test the breaker with a previous message, with a smaller key of course:
 
-```
+```ruby
 load './porta.rb'
 message = 'defend'
 scheme = Porta.new(message)
@@ -132,7 +115,7 @@ Matches Found: 5
 
 Let's use this with one of the words from the original message to check if we've got the wrong key:
 
-```
+```ruby
 load './porta.rb'
 load './breaker.rb'
 client = Porta.new("xikhxoljkhuhk")
@@ -160,7 +143,7 @@ Matches Found: 1
 
 Seems promising, let's convert those indexed into a key word ("comes out to `rnhx` for some reason"), and then use it to break the entire message:
 
-```
+```ruby
 message = "Vm gp vdqvzh ljjmuwaxc yfw lipxbh li qc zrukvauo xikhxoljkhuhk du zzzyc li vgvvdjjx dsz wuqvboi kopjttdtgh"
 client = Porta.new(message)
 client.decrypt('rnhx')
