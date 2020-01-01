@@ -18,6 +18,8 @@ client = Vigenere.new(encrypted)
 decrypted = client.decrypt([13, 2, 22, 4])
 ```
 
+These didn't yield much that looked correct so I moved on to brute force
+
 ## Breaker
 
 The `breaker.rb` is an attempt to use the Vigenère Scheme to brute force the message. It's configured to accept whatever scheme you like. However, I suspect it may only work correctly with Vigenère. Iterating over all the permuations within four letters, we collect every possible deciphered text and compare it to a dictionary of words. If there is a small set of words that match, we list them as possible keys used for the enciphered text.
